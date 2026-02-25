@@ -12,7 +12,8 @@ load_dotenv(Path(__file__).parent / ".env")
 
 
 def _get(key: str, default: str = "") -> str:
-    return os.getenv(key, default).strip()
+    val = os.getenv(key, "").strip()
+    return val if val else default
 
 
 # ── AI Provider ──────────────────────────────────────────
