@@ -89,6 +89,29 @@ AI_DEV_SOURCES: list[RSSSource] = [
     ),
 ]
 
+# ── X/Twitter 动态 (通过 RSSHub 转 RSS，无需 API Key) ────
+
+X_SOURCES: list[RSSSource] = [
+    RSSSource(name="X/@karpathy", url="https://rsshub.app/twitter/user/karpathy", category="x_timeline"),
+    RSSSource(name="X/@_akhaliq", url="https://rsshub.app/twitter/user/_akhaliq", category="x_timeline"),
+    RSSSource(name="X/@huggingface", url="https://rsshub.app/twitter/user/huggingface", category="x_timeline"),
+    RSSSource(name="X/@LangChainAI", url="https://rsshub.app/twitter/user/LangChainAI", category="x_timeline"),
+    RSSSource(name="X/@claudeai", url="https://rsshub.app/twitter/user/claudeai", category="x_timeline"),
+    RSSSource(name="X/@GoogleAI", url="https://rsshub.app/twitter/user/GoogleAI", category="x_timeline"),
+    RSSSource(name="X/@OpenAI", url="https://rsshub.app/twitter/user/OpenAI", category="x_timeline"),
+    RSSSource(name="X/@cursor_ai", url="https://rsshub.app/twitter/user/cursor_ai", category="x_timeline"),
+    RSSSource(name="X/@unity", url="https://rsshub.app/twitter/user/unity", category="x_timeline"),
+    RSSSource(name="X/@sama", url="https://rsshub.app/twitter/user/sama", category="x_timeline"),
+    RSSSource(name="X/@AndrewYNg", url="https://rsshub.app/twitter/user/AndrewYNg", category="x_timeline"),
+    RSSSource(name="X/@OfficialLoganK", url="https://rsshub.app/twitter/user/OfficialLoganK", category="x_timeline"),
+    RSSSource(name="X/@lxfater", url="https://rsshub.app/twitter/user/lxfater", category="x_timeline"),
+    RSSSource(name="X/@yangyi", url="https://rsshub.app/twitter/user/yangyi", category="x_timeline"),
+    RSSSource(name="X/@xiaohu", url="https://rsshub.app/twitter/user/xiaohu", category="x_timeline"),
+    RSSSource(name="X/@vista8", url="https://rsshub.app/twitter/user/vista8", category="x_timeline"),
+    RSSSource(name="X/@op7418", url="https://rsshub.app/twitter/user/op7418", category="x_timeline"),
+    RSSSource(name="X/@dotey", url="https://rsshub.app/twitter/user/dotey", category="x_timeline"),
+]
+
 # ── 游戏开发 AI (Unity) ─────────────────────────────────
 
 GAMEDEV_AI_SOURCES: list[RSSSource] = [
@@ -182,5 +205,5 @@ FINANCE_SOURCES: list[RSSSource] = [
 # ── 全部源 ────────────────────────────────────────────────
 
 ALL_SOURCES: list[RSSSource] = (
-    AI_DEV_SOURCES + GAMEDEV_AI_SOURCES + POLITICS_SOURCES + FINANCE_SOURCES
+    AI_DEV_SOURCES + X_SOURCES + GAMEDEV_AI_SOURCES + POLITICS_SOURCES + FINANCE_SOURCES
 )
