@@ -209,27 +209,55 @@ _CHANNELS = {
 }
 
 
-async def send(digest: list[dict], channel: str | None = None) -> bool:
+async def send(
+    digest: list[dict],
+    channels: list[str] | str | None = None,
+) -> bool:
     """
-    通过指定渠道推送新闻摘要。
+    通过一个或多个渠道推送新闻摘要。
 
     Args:
         digest: AI 处理后的摘要列表。
-        channel: 推送渠道 (wechat/telegram/email)，默认读 config.NOTIFY_VIA。
+        channels: 推送渠道列表或逗号分隔字符串，默认读 config.NOTIFY_VIA。
 
     Returns:
-        是否推送成功。
+        所有渠道是否都推送成功。
     """
     if not digest:
         logger.info("推送: 无内容需要推送")
         return True
 
-    channel = (channel or NOTIFY_VIA).lower()
-    fn = _CHANNELS.get(channel)
+    # 解析渠道列表
+    if channels is None:
+        channel_list = NOTIFY_VIA  # 已经是 list[str]
+    elif isinstance(channels, str):
+        channel_list = [ch.strip().lower() for ch in channels.split(",") if ch.strip()]
+    else:
+        channel_list = channels
 
-    if fn is None:
-        logger.error("推送: 不支持的渠道 '%s'，可选: %s", channel, list(_CHANNELS))
+    if not channel_list:
+        logger.error("推送: 未指定任何渠道")
         return False
 
-    logger.info("推送: 使用 %s 渠道发送 %d 条新闻", channel, len(digest))
-    return await fn(digest)
+    logger.info("推送: 使用 %s 渠道发送 %d 条新闻", channel_list, len(digest))
+
+    # 并发推送到所有渠道
+    import asyncio
+
+    async def _push_one(ch: str) -> tuple[str, bool]:
+        fn = _CHANNELS.get(ch)
+        if fn is None:
+            logger.error("推送: 不支持的渠道 '%s'，可选: %s", ch, list(_CHANNELS))
+            return ch, False
+        return ch, await fn(digest)
+
+    results = await asyncio.gather(*[_push_one(ch) for ch in channel_list])
+
+    all_ok = True
+    for ch, ok in results:
+        if not ok:
+            logger.error("推送: 渠道 '%s' 失败", ch)
+            all_ok = False
+
+    return all_ok
+

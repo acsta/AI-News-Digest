@@ -124,7 +124,7 @@ async def main() -> None:
 
     # ── 4. 推送 ──────────────────────────────────────────
     logger.info("▶ 第 4 步: 推送新闻摘要...")
-    success = await send(digest, channel=args.notify)
+    success = await send(digest, channels=args.notify)
 
     if success:
         # 推送成功后标记已处理

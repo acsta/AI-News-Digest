@@ -49,8 +49,12 @@ SMTP_USER: str = _get("SMTP_USER")
 SMTP_PASSWORD: str = _get("SMTP_PASSWORD")
 EMAIL_TO: str = _get("EMAIL_TO")
 
-# ── 通知渠道 ─────────────────────────────────────────────
-NOTIFY_VIA: str = _get("NOTIFY_VIA", "wechat")  # wechat | telegram | email
+# ── 通知渠道（支持多渠道，逗号分隔） ───────────────────────
+NOTIFY_VIA: list[str] = [
+    ch.strip().lower()
+    for ch in _get("NOTIFY_VIA", "wechat").split(",")
+    if ch.strip()
+]
 
 # ── 通用参数 ─────────────────────────────────────────────
 FETCH_HOURS: int = int(_get("FETCH_HOURS", "24"))
