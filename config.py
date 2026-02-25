@@ -26,7 +26,7 @@ OPENAI_API_KEY: str = _get("OPENAI_API_KEY")
 OPENAI_MODEL: str = _get("OPENAI_MODEL", "gpt-4o-mini")
 
 DEEPSEEK_API_KEY: str = _get("DEEPSEEK_API_KEY")
-DEEPSEEK_MODEL: str = _get("DEEPSEEK_MODEL", "deepseek-chat")
+DEEPSEEK_MODEL: str = _get("DEEPSEEK_MODEL", "deepseek-reasoner")
 DEEPSEEK_BASE_URL: str = "https://api.deepseek.com"
 
 # ── X / Twitter ──────────────────────────────────────────
