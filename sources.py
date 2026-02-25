@@ -1,7 +1,11 @@
 """
 sources.py — RSS 新闻源定义
 每个源包含名称、RSS URL 和类别。
-分为四大板块：AI 开发实用、游戏开发 AI (Unity)、时事政治、财经新闻。
+分为五大板块：AI 开发实用、X/Twitter 动态、游戏开发 AI (Unity)、时事政治、财经新闻。
+
+X/Twitter 动态板块当前为空 —— Twitter/X 已封锁所有免费读取路径
+（API 免费层不支持读推文、RSSHub/Nitter 公共实例全部失效）。
+如果未来有可用方案，取消注释 X_SOURCES 并填入实例地址即可。
 """
 
 from dataclasses import dataclass, field
@@ -15,7 +19,7 @@ class RSSSource:
     """RSS 源定义"""
     name: str
     url: str
-    category: str  # "ai_dev" | "gamedev_ai" | "politics" | "finance"
+    category: str  # "ai_dev" | "x_timeline" | "gamedev_ai" | "politics" | "finance"
 
 
 @dataclass
@@ -31,10 +35,8 @@ class Article:
 
 
 # ── AI 开发实用 ──────────────────────────────────────────
-# 新模型发布、开源项目、AI 工具、开发者教程
 
 AI_DEV_SOURCES: list[RSSSource] = [
-    # --- 综合 AI 新闻 ---
     RSSSource(
         name="Hacker News AI",
         url="https://hnrss.org/newest?q=AI+OR+LLM+OR+GPT+OR+Claude+OR+Gemini",
@@ -55,7 +57,11 @@ AI_DEV_SOURCES: list[RSSSource] = [
         url="https://feeds.arstechnica.com/arstechnica/technology-lab",
         category="ai_dev",
     ),
-    # --- 模型 & 研究 ---
+    RSSSource(
+        name="MIT Technology Review",
+        url="https://www.technologyreview.com/feed/",
+        category="ai_dev",
+    ),
     RSSSource(
         name="Hugging Face Blog",
         url="https://huggingface.co/blog/feed.xml",
@@ -71,46 +77,22 @@ AI_DEV_SOURCES: list[RSSSource] = [
         url="https://blog.google/technology/ai/rss/",
         category="ai_dev",
     ),
-    # --- 开源 & 工具 ---
     RSSSource(
-        name="GitHub Trending (AI)",
-        url="https://rsshub.app/github/trending/daily/python?since=daily",
-        category="ai_dev",
-    ),
-    RSSSource(
-        name="Papers With Code",
-        url="https://rsshub.app/paperswithcode/latest",
-        category="ai_dev",
-    ),
-    RSSSource(
-        name="Towards Data Science",
-        url="https://rsshub.app/medium/feed/towards-data-science",
+        name="Hacker News Show (AI/ML)",
+        url="https://hnrss.org/show?q=AI+OR+machine+learning+OR+open+source",
         category="ai_dev",
     ),
 ]
 
-# ── X/Twitter 动态 (通过 RSSHub 转 RSS，无需 API Key) ────
+# ── X/Twitter 动态 ───────────────────────────────────────
+# ⚠️ 当前无可用免费方案。如果你有可用的 Nitter 实例或自建 RSSHub，
+# 取消下面的注释并替换 NITTER_INSTANCE 地址即可。
+#
+# NITTER_INSTANCE = "https://your-nitter-instance.com"
+# def _x(u): return RSSSource(f"X/@{u}", f"{NITTER_INSTANCE}/{u}/rss", "x_timeline")
+# X_SOURCES = [_x("karpathy"), _x("_akhaliq"), _x("sama"), ...]
 
-X_SOURCES: list[RSSSource] = [
-    RSSSource(name="X/@karpathy", url="https://rsshub.app/twitter/user/karpathy", category="x_timeline"),
-    RSSSource(name="X/@_akhaliq", url="https://rsshub.app/twitter/user/_akhaliq", category="x_timeline"),
-    RSSSource(name="X/@huggingface", url="https://rsshub.app/twitter/user/huggingface", category="x_timeline"),
-    RSSSource(name="X/@LangChainAI", url="https://rsshub.app/twitter/user/LangChainAI", category="x_timeline"),
-    RSSSource(name="X/@claudeai", url="https://rsshub.app/twitter/user/claudeai", category="x_timeline"),
-    RSSSource(name="X/@GoogleAI", url="https://rsshub.app/twitter/user/GoogleAI", category="x_timeline"),
-    RSSSource(name="X/@OpenAI", url="https://rsshub.app/twitter/user/OpenAI", category="x_timeline"),
-    RSSSource(name="X/@cursor_ai", url="https://rsshub.app/twitter/user/cursor_ai", category="x_timeline"),
-    RSSSource(name="X/@unity", url="https://rsshub.app/twitter/user/unity", category="x_timeline"),
-    RSSSource(name="X/@sama", url="https://rsshub.app/twitter/user/sama", category="x_timeline"),
-    RSSSource(name="X/@AndrewYNg", url="https://rsshub.app/twitter/user/AndrewYNg", category="x_timeline"),
-    RSSSource(name="X/@OfficialLoganK", url="https://rsshub.app/twitter/user/OfficialLoganK", category="x_timeline"),
-    RSSSource(name="X/@lxfater", url="https://rsshub.app/twitter/user/lxfater", category="x_timeline"),
-    RSSSource(name="X/@yangyi", url="https://rsshub.app/twitter/user/yangyi", category="x_timeline"),
-    RSSSource(name="X/@xiaohu", url="https://rsshub.app/twitter/user/xiaohu", category="x_timeline"),
-    RSSSource(name="X/@vista8", url="https://rsshub.app/twitter/user/vista8", category="x_timeline"),
-    RSSSource(name="X/@op7418", url="https://rsshub.app/twitter/user/op7418", category="x_timeline"),
-    RSSSource(name="X/@dotey", url="https://rsshub.app/twitter/user/dotey", category="x_timeline"),
-]
+X_SOURCES: list[RSSSource] = []  # 暂时为空
 
 # ── 游戏开发 AI (Unity) ─────────────────────────────────
 
@@ -121,12 +103,7 @@ GAMEDEV_AI_SOURCES: list[RSSSource] = [
         category="gamedev_ai",
     ),
     RSSSource(
-        name="Unity AI/ML",
-        url="https://rsshub.app/unity/blog/ai",
-        category="gamedev_ai",
-    ),
-    RSSSource(
-        name="Gamasutra (Game Developer)",
+        name="Game Developer (Gamasutra)",
         url="https://www.gamedeveloper.com/rss.xml",
         category="gamedev_ai",
     ),
@@ -156,18 +133,18 @@ POLITICS_SOURCES: list[RSSSource] = [
         category="politics",
     ),
     RSSSource(
-        name="AP News",
-        url="https://rsshub.app/apnews/topics/apf-topnews",
-        category="politics",
-    ),
-    RSSSource(
         name="South China Morning Post",
         url="https://www.scmp.com/rss/91/feed",
         category="politics",
     ),
     RSSSource(
-        name="FT World",
-        url="https://rsshub.app/ft/news/world",
+        name="Al Jazeera",
+        url="https://www.aljazeera.com/xml/rss/all.xml",
+        category="politics",
+    ),
+    RSSSource(
+        name="The Guardian World",
+        url="https://www.theguardian.com/world/rss",
         category="politics",
     ),
 ]
@@ -176,28 +153,23 @@ POLITICS_SOURCES: list[RSSSource] = [
 
 FINANCE_SOURCES: list[RSSSource] = [
     RSSSource(
-        name="Bloomberg Markets",
-        url="https://rsshub.app/bloomberg/markets",
-        category="finance",
-    ),
-    RSSSource(
-        name="Wall Street Journal",
-        url="https://rsshub.app/wsj/en-us",
-        category="finance",
-    ),
-    RSSSource(
         name="CNBC Business",
         url="https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10001147",
         category="finance",
     ),
     RSSSource(
-        name="36氪",
-        url="https://rsshub.app/36kr/newsflashes",
+        name="Yahoo Finance",
+        url="https://finance.yahoo.com/news/rssindex",
         category="finance",
     ),
     RSSSource(
-        name="华尔街见闻",
-        url="https://rsshub.app/wallstreetcn/news/global",
+        name="MarketWatch",
+        url="https://feeds.marketwatch.com/marketwatch/topstories/",
+        category="finance",
+    ),
+    RSSSource(
+        name="Investing.com",
+        url="https://www.investing.com/rss/news.rss",
         category="finance",
     ),
 ]

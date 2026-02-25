@@ -10,7 +10,6 @@ import sys
 from datetime import datetime, timezone
 
 from scraper import fetch_all_rss
-from twitter_fetcher import fetch_tweets
 from dedup import is_seen, mark_seen, cleanup, filter_new
 from ai_processor import summarize
 from notifier import send, _format_markdown
@@ -55,21 +54,12 @@ async def main() -> None:
     logger.info("AI News Digest 开始运行")
     logger.info("=" * 60)
 
-    # ── 1. 采集 ──────────────────────────────────────────
-    logger.info("▶ 第 1 步: 采集新闻源...")
+    # ── 1. 采集 (RSS + X/Twitter via Nitter, 全部走 RSS 管道) ──
+    logger.info("▶ 第 1 步: 采集新闻源 (RSS + X/Nitter)...")
 
-    rss_articles, tweet_articles = await asyncio.gather(
-        fetch_all_rss(),
-        fetch_tweets(),
-    )
+    all_articles = await fetch_all_rss()
 
-    all_articles = rss_articles + tweet_articles
-    logger.info(
-        "采集完成: RSS %d 篇 + Twitter %d 条 = 共 %d 篇",
-        len(rss_articles),
-        len(tweet_articles),
-        len(all_articles),
-    )
+    logger.info("采集完成: 共 %d 篇", len(all_articles))
 
     if not all_articles:
         logger.warning("未采集到任何文章，流程结束")
