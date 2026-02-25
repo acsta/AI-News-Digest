@@ -1,6 +1,7 @@
 """
 sources.py — RSS 新闻源定义
 每个源包含名称、RSS URL 和类别。
+分为四大板块：AI 开发实用、游戏开发 AI (Unity)、时事政治、财经新闻。
 """
 
 from dataclasses import dataclass, field
@@ -14,7 +15,7 @@ class RSSSource:
     """RSS 源定义"""
     name: str
     url: str
-    category: str  # "ai" | "politics"
+    category: str  # "ai_dev" | "gamedev_ai" | "politics" | "finance"
 
 
 @dataclass
@@ -29,42 +30,96 @@ class Article:
     extra: dict = field(default_factory=dict)
 
 
-# ── AI 类 RSS 源 ─────────────────────────────────────────
+# ── AI 开发实用 ──────────────────────────────────────────
+# 新模型发布、开源项目、AI 工具、开发者教程
 
-AI_SOURCES: list[RSSSource] = [
+AI_DEV_SOURCES: list[RSSSource] = [
+    # --- 综合 AI 新闻 ---
+    RSSSource(
+        name="Hacker News AI",
+        url="https://hnrss.org/newest?q=AI+OR+LLM+OR+GPT+OR+Claude+OR+Gemini",
+        category="ai_dev",
+    ),
     RSSSource(
         name="TechCrunch AI",
         url="https://techcrunch.com/category/artificial-intelligence/feed/",
-        category="ai",
+        category="ai_dev",
     ),
     RSSSource(
         name="The Verge AI",
         url="https://www.theverge.com/rss/ai-artificial-intelligence/index.xml",
-        category="ai",
-    ),
-    RSSSource(
-        name="MIT Technology Review",
-        url="https://www.technologyreview.com/feed/",
-        category="ai",
+        category="ai_dev",
     ),
     RSSSource(
         name="Ars Technica AI",
         url="https://feeds.arstechnica.com/arstechnica/technology-lab",
-        category="ai",
+        category="ai_dev",
     ),
+    # --- 模型 & 研究 ---
     RSSSource(
-        name="Hacker News AI",
-        url="https://hnrss.org/newest?q=AI+OR+LLM+OR+GPT",
-        category="ai",
+        name="Hugging Face Blog",
+        url="https://huggingface.co/blog/feed.xml",
+        category="ai_dev",
     ),
     RSSSource(
         name="OpenAI Blog",
         url="https://openai.com/blog/rss.xml",
-        category="ai",
+        category="ai_dev",
+    ),
+    RSSSource(
+        name="Google AI Blog",
+        url="https://blog.google/technology/ai/rss/",
+        category="ai_dev",
+    ),
+    # --- 开源 & 工具 ---
+    RSSSource(
+        name="GitHub Trending (AI)",
+        url="https://rsshub.app/github/trending/daily/python?since=daily",
+        category="ai_dev",
+    ),
+    RSSSource(
+        name="Papers With Code",
+        url="https://rsshub.app/paperswithcode/latest",
+        category="ai_dev",
+    ),
+    RSSSource(
+        name="Towards Data Science",
+        url="https://rsshub.app/medium/feed/towards-data-science",
+        category="ai_dev",
     ),
 ]
 
-# ── 政治类 RSS 源 ────────────────────────────────────────
+# ── 游戏开发 AI (Unity) ─────────────────────────────────
+
+GAMEDEV_AI_SOURCES: list[RSSSource] = [
+    RSSSource(
+        name="Unity Blog",
+        url="https://blog.unity.com/feed",
+        category="gamedev_ai",
+    ),
+    RSSSource(
+        name="Unity AI/ML",
+        url="https://rsshub.app/unity/blog/ai",
+        category="gamedev_ai",
+    ),
+    RSSSource(
+        name="Gamasutra (Game Developer)",
+        url="https://www.gamedeveloper.com/rss.xml",
+        category="gamedev_ai",
+    ),
+    RSSSource(
+        name="HN Game AI",
+        url="https://hnrss.org/newest?q=game+AI+OR+unity+AI+OR+procedural+generation",
+        category="gamedev_ai",
+    ),
+    RSSSource(
+        name="80 Level",
+        url="https://80.lv/feed/",
+        category="gamedev_ai",
+    ),
+]
+
+# ── 时事政治 ─────────────────────────────────────────────
 
 POLITICS_SOURCES: list[RSSSource] = [
     RSSSource(
@@ -78,17 +133,54 @@ POLITICS_SOURCES: list[RSSSource] = [
         category="politics",
     ),
     RSSSource(
-        name="Reuters World",
-        url="https://www.rss.reuters.com/news/worldNews",
-        category="politics",
-    ),
-    RSSSource(
         name="AP News",
         url="https://rsshub.app/apnews/topics/apf-topnews",
         category="politics",
+    ),
+    RSSSource(
+        name="South China Morning Post",
+        url="https://www.scmp.com/rss/91/feed",
+        category="politics",
+    ),
+    RSSSource(
+        name="FT World",
+        url="https://rsshub.app/ft/news/world",
+        category="politics",
+    ),
+]
+
+# ── 财经新闻 ─────────────────────────────────────────────
+
+FINANCE_SOURCES: list[RSSSource] = [
+    RSSSource(
+        name="Bloomberg Markets",
+        url="https://rsshub.app/bloomberg/markets",
+        category="finance",
+    ),
+    RSSSource(
+        name="Wall Street Journal",
+        url="https://rsshub.app/wsj/en-us",
+        category="finance",
+    ),
+    RSSSource(
+        name="CNBC Business",
+        url="https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10001147",
+        category="finance",
+    ),
+    RSSSource(
+        name="36氪",
+        url="https://rsshub.app/36kr/newsflashes",
+        category="finance",
+    ),
+    RSSSource(
+        name="华尔街见闻",
+        url="https://rsshub.app/wallstreetcn/news/global",
+        category="finance",
     ),
 ]
 
 # ── 全部源 ────────────────────────────────────────────────
 
-ALL_SOURCES: list[RSSSource] = AI_SOURCES + POLITICS_SOURCES
+ALL_SOURCES: list[RSSSource] = (
+    AI_DEV_SOURCES + GAMEDEV_AI_SOURCES + POLITICS_SOURCES + FINANCE_SOURCES
+)

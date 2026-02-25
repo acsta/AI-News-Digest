@@ -28,52 +28,71 @@ logger = logging.getLogger(__name__)
 
 # ── 格式化 ───────────────────────────────────────────────
 
+_SECTION_META = {
+    "ai_dev":     ("🤖 AI 开发实用", 1),
+    "gamedev_ai": ("🎮 游戏开发 AI", 2),
+    "politics":   ("🏛️ 时事政治", 3),
+    "finance":    ("💰 重要财经", 4),
+}
+
+
+def _group_by_section(digest: list[dict]) -> list[tuple[str, str, list[dict]]]:
+    """按 section 分组并排序。"""
+    groups: dict[str, list[dict]] = {}
+    for item in digest:
+        sec = item.get("section", "other")
+        groups.setdefault(sec, []).append(item)
+    result = []
+    for sec_key in sorted(groups, key=lambda s: _SECTION_META.get(s, (s, 99))[1]):
+        label, _ = _SECTION_META.get(sec_key, (f"📌 {sec_key}", 99))
+        result.append((sec_key, label, groups[sec_key]))
+    return result
+
+
 def _format_markdown(digest: list[dict]) -> str:
-    """将摘要格式化为 Markdown 文本。"""
+    """将摘要格式化为 Markdown 文本，按板块分组。"""
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     lines = [f"# 📰 AI News Digest — {today}\n"]
 
-    for i, item in enumerate(digest, 1):
-        importance = item.get("importance", "?")
-        title = item.get("title_cn", "无标题")
-        summary = item.get("summary_cn", "")
-        category = item.get("category", "other")
-        url = item.get("original_url", "")
+    for sec_key, label, items in _group_by_section(digest):
+        lines.append(f"## {label}\n")
+        for i, item in enumerate(items, 1):
+            importance = item.get("importance", "?")
+            title = item.get("title_cn", "无标题")
+            summary = item.get("summary_cn", "")
+            url = item.get("original_url", "")
 
-        emoji = {"ai": "🤖", "politics": "🏛️", "tech": "💻"}.get(category, "📌")
-        lines.append(f"## {emoji} {i}. {title}")
-        lines.append(f"**重要性: {importance}/10 | 类别: {category}**\n")
-        lines.append(f"{summary}\n")
-        if url:
-            lines.append(f"🔗 [阅读原文]({url})\n")
+            lines.append(f"### {i}. {title}")
+            lines.append(f"⭐ {importance}/10\n")
+            lines.append(f"{summary}\n")
+            if url:
+                lines.append(f"🔗 [阅读原文]({url})\n")
         lines.append("---\n")
 
     return "\n".join(lines)
 
 
 def _format_html(digest: list[dict]) -> str:
-    """将摘要格式化为 HTML（用于邮件）。"""
+    """将摘要格式化为 HTML（用于邮件），按板块分组。"""
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     parts = [
-        "<html><body>",
+        "<html><body style='font-family:sans-serif;max-width:700px;margin:auto'>",
         f"<h1>📰 AI News Digest — {today}</h1>",
     ]
 
-    for i, item in enumerate(digest, 1):
-        importance = item.get("importance", "?")
-        title = item.get("title_cn", "无标题")
-        summary = item.get("summary_cn", "")
-        category = item.get("category", "other")
-        url = item.get("original_url", "")
+    for sec_key, label, items in _group_by_section(digest):
+        parts.append(f"<h2>{label}</h2>")
+        for i, item in enumerate(items, 1):
+            importance = item.get("importance", "?")
+            title = item.get("title_cn", "无标题")
+            summary = item.get("summary_cn", "")
+            url = item.get("original_url", "")
 
-        emoji = {"ai": "🤖", "politics": "🏛️", "tech": "💻"}.get(category, "📌")
-        parts.append(f"<h2>{emoji} {i}. {title}</h2>")
-        parts.append(
-            f"<p><strong>重要性: {importance}/10 | 类别: {category}</strong></p>"
-        )
-        parts.append(f"<p>{summary}</p>")
-        if url:
-            parts.append(f'<p>🔗 <a href="{url}">阅读原文</a></p>')
+            parts.append(f"<h3>{i}. {title}</h3>")
+            parts.append(f"<p><strong>⭐ {importance}/10</strong></p>")
+            parts.append(f"<p>{summary}</p>")
+            if url:
+                parts.append(f'<p>🔗 <a href="{url}">阅读原文</a></p>')
         parts.append("<hr/>")
 
     parts.append("</body></html>")
