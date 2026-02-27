@@ -1,6 +1,6 @@
 """
 ai_processor.py — AI 筛选 + 摘要模块
-支持 Gemini（默认）/ OpenAI / Deepseek 三种 Provider。
+支持 Gemini（默认）/ OpenAI / Deepseek / Qwen（通义千问）四种 Provider。
 将采集到的文章发送给 LLM，返回中文摘要和重要性排序。
 """
 
@@ -17,6 +17,9 @@ from config import (
     DEEPSEEK_API_KEY,
     DEEPSEEK_MODEL,
     DEEPSEEK_BASE_URL,
+    QWEN_API_KEY,
+    QWEN_MODEL,
+    QWEN_BASE_URL,
     MAX_NEWS_ITEMS,
 )
 
@@ -202,12 +205,34 @@ async def _summarize_deepseek(articles: list[Article]) -> list[dict]:
     return _parse_response(response.choices[0].message.content or "")
 
 
+# ── Qwen (通义千问) Provider ────────────────────────────
+
+async def _summarize_qwen(articles: list[Article]) -> list[dict]:
+    """使用阿里通义千问生成摘要（兼容 OpenAI SDK）。"""
+    from openai import AsyncOpenAI
+
+    client = AsyncOpenAI(api_key=QWEN_API_KEY, base_url=QWEN_BASE_URL)
+    user_prompt = _build_user_prompt(articles)
+
+    response = await client.chat.completions.create(
+        model=QWEN_MODEL,
+        messages=[
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": user_prompt},
+        ],
+        temperature=0.3,
+    )
+
+    return _parse_response(response.choices[0].message.content or "")
+
+
 # ── 统一入口 ─────────────────────────────────────────────
 
 _PROVIDERS = {
     "gemini": _summarize_gemini,
     "openai": _summarize_openai,
     "deepseek": _summarize_deepseek,
+    "qwen": _summarize_qwen,
 }
 
 

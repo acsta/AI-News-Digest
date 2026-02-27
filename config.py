@@ -17,7 +17,7 @@ def _get(key: str, default: str = "") -> str:
 
 
 # ── AI Provider ──────────────────────────────────────────
-AI_PROVIDER: str = _get("AI_PROVIDER", "gemini")  # gemini | openai | deepseek
+AI_PROVIDER: str = _get("AI_PROVIDER", "gemini")  # gemini | openai | deepseek | qwen
 
 GEMINI_API_KEY: str = _get("GEMINI_API_KEY")
 GEMINI_MODEL: str = _get("GEMINI_MODEL", "gemini-2.0-flash")
@@ -28,6 +28,10 @@ OPENAI_MODEL: str = _get("OPENAI_MODEL", "gpt-4o-mini")
 DEEPSEEK_API_KEY: str = _get("DEEPSEEK_API_KEY")
 DEEPSEEK_MODEL: str = _get("DEEPSEEK_MODEL", "deepseek-reasoner")
 DEEPSEEK_BASE_URL: str = "https://api.deepseek.com"
+
+QWEN_API_KEY: str = _get("QWEN_API_KEY")
+QWEN_MODEL: str = _get("QWEN_MODEL", "qwen-plus")
+QWEN_BASE_URL: str = "https://dashscope.aliyuncs.com/compatible-mode/v1"
 
 # ── X / Twitter ──────────────────────────────────────────
 TWITTER_BEARER_TOKEN: str = _get("TWITTER_BEARER_TOKEN")

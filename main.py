@@ -33,7 +33,7 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--provider",
-        choices=["gemini", "openai", "deepseek"],
+        choices=["gemini", "openai", "deepseek", "qwen"],
         default=None,
         help="覆盖 AI Provider（默认读取 .env 中的 AI_PROVIDER）",
     )
